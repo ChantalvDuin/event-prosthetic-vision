@@ -1,9 +1,10 @@
 from v2ecore.emulator import EventEmulator
 import torch
 import cv2
+import numpy as np
 
-output_path = '/home/duinch/PycharmProjects/RL-mobility/Python/Experiments/CHANTAL/v2e-emulator-output'
-video_path = '/home/duinch/PycharmProjects/RL-mobility/Python/Experiments/CHANTAL/v2e_tutorial_video.avi'
+video_path = '/home/duinch/PycharmProjects/dvs_phosphenes/data/v2e_tutorial_video.avi'
+output_folder = '/home/duinch/PycharmProjects/dvs_phosphenes/demo_output'
 output_file = 'events_emulator.h5'
 
 # **IMPORTANT** make torch static, likely get faster emulation
@@ -43,7 +44,7 @@ emulator = EventEmulator(
     leak_rate_hz=1,
     shot_noise_rate_hz=10,
     # dvs_h5=output_file,
-    output_folder=output_path,
+    output_folder=output_folder,
     # dvs_aedat2=output_file,
     # output_width= pixel_width,
     # output_height=pixel_height,
@@ -96,3 +97,6 @@ while(cap.isOpened()):
         break
 
 cap.release()
+
+# output_string = output_folder + "/" + output_file
+# np.save(output_string, new_events)

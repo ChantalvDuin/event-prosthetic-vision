@@ -1,7 +1,8 @@
 import os
 
-video_path = '/home/duinch/PycharmProjects/RL-mobility/Python/Experiments/CHANTAL/box-moving-2.mp4'
-output_folder = '/home/duinch/PycharmProjects/RL-mobility/Python/Experiments/CHANTAL/v2e-box-output'
+video_path = '/home/duinch/PycharmProjects/dvs_phosphenes/data/v2e_tutorial_video.avi'
+output_folder = '/home/duinch/PycharmProjects/dvs_phosphenes/demo_output'
+
 overwrite = True #@param {type:"boolean"}
 
 # overwrites files in existing folder (checks existence of non-empty output_folder). (default: True)
