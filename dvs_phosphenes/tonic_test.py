@@ -1,8 +1,8 @@
 import h5py
 import numpy as np
 import numpy.lib.recfunctions as rfn
-
 import tonic.transforms as transforms
+import matplotlib.pyplot as plt
 
 input_file = '/home/duinch/PycharmProjects/dvs_phosphenes/demo_output/events.h5'
 
@@ -30,11 +30,35 @@ width = frames.shape[1]
 height = frames.shape[2]
 sensor_size = (width, height, 2)
 
-# print(tonic_events.shape)
-# print(tonic_events[0])
+n_time_bins = 200
+n_event_bins = 200
 
-n_time_bins = 20
+# frame_transform = transforms.ToFrame(sensor_size=sensor_size, n_time_bins=n_time_bins)
+# frame_transform = transforms.ToFrame(sensor_size=sensor_size, n_event_bins=n_event_bins)
+# tonic_frames = frame_transform(tonic_events)
+#
+# def plot_frames(frames):
+#     fig, axes = plt.subplots(1, len(frames))
+#     for axis, frame in zip(axes, frames):
+#         axis.imshow(frame[1] - frame[0])
+#         axis.axis("off")
+#     plt.show(block=True)
+#     plt.tight_layout()
+#
+#
+# plot_frames(tonic_frames[0:5])
+
+volume = transforms.ToVoxelGrid(sensor_size=sensor_size, n_time_bins=n_time_bins)(tonic_events)
+
+def plot_voxel_grid(volume):
+    fig, axes = plt.subplots(1, len(volume))
+    for axis, slice in zip(axes, volume):
+        axis.imshow(slice)
+        axis.axis("off")
+    plt.show(block=True)
+    plt.tight_layout()
+
+plot_voxel_grid(volume[0:5])
 
 
-frame_transform = transforms.ToFrame(sensor_size=sensor_size, n_time_bins=n_time_bins)
-tonic_frames = frame_transform(tonic_events)
+
