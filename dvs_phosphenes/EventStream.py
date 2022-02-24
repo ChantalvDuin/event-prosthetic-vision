@@ -16,7 +16,7 @@ class EventStream(object):
     Computes event data from DVS camera or from traditional video using v2e framework
     ---
     Parameters:
-        events (array) : ndarray, [x, y, t, p] where, :
+        events (array) : ndarray, [x, y, t, p] where,
                 - x is the x-location of event in pixels
                 - y is the y-location of event in pixels
                 - t is the time-stamp of event
@@ -34,7 +34,7 @@ class EventStream(object):
         """
         Reads a given hdf5 event file and stores the events in desired event representation ordering
         ---
-        Parameter :
+        Parameters :
             input_file : given hdf5 event file
         """
         data_file = h5py.File(input_file, 'r')
@@ -46,7 +46,8 @@ class EventStream(object):
 
     def convert_video_to_events_v2e_emulator(self, video_path, output_folder):
         """
-        Computes events from a traditional video using the v2e framework
+        Synthesize fake DVS events from traditional video frames directly using the Emulator from the
+        v2e framework
         ---
         Parameters :
             video_path: path of video to be converted
@@ -95,15 +96,27 @@ class EventStream(object):
 
                 # update time
                 current_time += delta_t
-
                 idx += 1
             else:
                 break
 
         cap.release()
+
+        # convert event ordering from the v2e desired ordering of (t, x, y, p) to the tonic preferred ordering of (x, y , t, p)
         self.events = convert_v2e_events_to_tonic_events(new_events)
 
 def convert_v2e_events_to_tonic_events(h5_events):
+        """
+        Returns the events after converting the event ordering of h5 event files and v2e events (t, x, y ,p) to the event ordering
+        preferred by tonic : (x, y, t, p)
+        ---
+        Parameters :
+            h5_events: events as ndarray, [t, x, y, p] where,
+                - t is the time-stamp of event
+                - x is the x-location of event in pixels
+                - y is the y-location of event in pixels
+                - p is the polarity of the event
+        """
         dtype = np.dtype([("x", int), ("y", int), ("t", int), ("p", int)])
         tonic_events = np.zeros((len(h5_events), 4))
         tonic_events[:, [2, 1, 0, 3]] = h5_events[:, [0, 1, 2, 3]]  # tonic events have the shape (x, y, t, p)
@@ -111,7 +124,20 @@ def convert_v2e_events_to_tonic_events(h5_events):
         return tonic_events
 
 def convert_video_to_events_v2e_command(video_path, output_folder, out_filename_h5, out_filename_aedat = "None", overwrite=True, skip_video_output=False, davis_output = True):
-
+    """
+    Extracts frames from the provided video, synthesizes fake DVS events from the video
+    frames from the original video frames and generates different possible v2e outputs according to the
+    specified v2e command. The v2e command is build in this function executed from the terminal.
+    ---
+    Parameters :
+        video_path: path of video to be converted
+        output_folder: folder to store v2e output
+        out_filename_h5: output DVS events as hdf5 event database
+        out_filename_aedat: output DVS events as aedat event database
+        overwrite: overwrites files in existing output folder
+        skip_video_output: skips producing video output
+        davis_output: saves frames within hdf5 event database
+    """
     dvs_exposure = "duration .033"
     input_frame_rate = 30
     input_slowmotion_factor = 1
