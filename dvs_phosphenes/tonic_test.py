@@ -30,13 +30,13 @@ width = frames.shape[1]
 height = frames.shape[2]
 sensor_size = (width, height, 2)
 
-n_time_bins = 200
+n_time_bins = 3
 n_event_bins = 200
 
 # frame_transform = transforms.ToFrame(sensor_size=sensor_size, n_time_bins=n_time_bins)
-# frame_transform = transforms.ToFrame(sensor_size=sensor_size, n_event_bins=n_event_bins)
+# # frame_transform = transforms.ToFrame(sensor_size=sensor_size, n_event_bins=n_event_bins)
 # tonic_frames = frame_transform(tonic_events)
-#
+# #
 # def plot_frames(frames):
 #     fig, axes = plt.subplots(1, len(frames))
 #     for axis, frame in zip(axes, frames):
@@ -44,21 +44,34 @@ n_event_bins = 200
 #         axis.axis("off")
 #     plt.show(block=True)
 #     plt.tight_layout()
-#
-#
+# #
+# #
 # plot_frames(tonic_frames[0:5])
 
-volume = transforms.ToVoxelGrid(sensor_size=sensor_size, n_time_bins=n_time_bins)(tonic_events)
+# volume = transforms.ToVoxelGrid(sensor_size=sensor_size, n_time_bins=n_time_bins)(tonic_events)
+#
+# def plot_voxel_grid(volume):
+#     fig, axes = plt.subplots(1, len(volume))
+#     for axis, slice in zip(axes, volume):
+#         axis.imshow(slice)
+#         axis.axis("off")
+#     plt.show(block=True)
+#     plt.tight_layout()
+#
+# plot_voxel_grid(volume[0:5])
 
-def plot_voxel_grid(volume):
-    fig, axes = plt.subplots(1, len(volume))
-    for axis, slice in zip(axes, volume):
-        axis.imshow(slice)
-        axis.axis("off")
-    plt.show(block=True)
-    plt.tight_layout()
+denoise_transform = transforms.Denoise(filter_time=10000)
 
-plot_voxel_grid(volume[0:5])
+events_denoised = denoise_transform(tonic_events)
 
+surfaces = transforms.ToTimesurface(sensor_size=sensor_size, surface_dimensions=None, tau=10000, decay='exp')(events_denoised)
 
+n_events = events_denoised.shape[0]
+n_events_per_slice = n_events // 3
+fig, axes = plt.subplots(1, 3)
+for i, axis in enumerate(axes):
+    surf = surfaces[(i+1)*n_events_per_slice - 1]
+    axis.imshow(surf[0] - surf[1])
+    axis.axis("off")
+plt.tight_layout()
 

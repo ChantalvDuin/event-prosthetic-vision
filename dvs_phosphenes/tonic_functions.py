@@ -2,7 +2,6 @@ import h5py
 import numpy as np
 import tonic.transforms as transforms
 
-input_file = '/home/duinch/PycharmProjects/RL-mobility/Python/Experiments/CHANTAL/v2e-output/events.h5'
 # input_file = '/home/duinch/PycharmProjects/RL-mobility/Python/Experiments/CHANTAL/v2e-box-output/events.h5'
 
 data_file = h5py.File(input_file, 'r')
