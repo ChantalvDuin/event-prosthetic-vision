@@ -217,6 +217,6 @@ def convert_video_to_events_v2e_command(video_path, output_folder, out_filename_
     # Final v2e command
     final_v2e_command = " ".join(v2e_command)
 
-    input_terminal = '~/miniconda3/envs/dvs/bin/python ~/PycharmProjects/v2e/v2e.py%s' % final_v2e_command
+    input_terminal = '~/.conda/envs/dvs/bin/python ~/PycharmProjects/v2e/v2e.py%s' % final_v2e_command
     os.system(input_terminal)
 
