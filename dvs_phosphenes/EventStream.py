@@ -119,7 +119,7 @@ def convert_v2e_events_to_tonic_events(h5_events):
         """
         dtype = np.dtype([("x", int), ("y", int), ("t", int), ("p", int)])
         tonic_events = np.zeros((len(h5_events), 4))
-        tonic_events[:, [2, 1, 0, 3]] = h5_events[:, [0, 1, 2, 3]]  # tonic events have the shape (x, y, t, p)
+        tonic_events[:, [2, 1, 0, 3]] = h5_events # tonic events have the shape (x, y, t, p) while h5 events : (t, y , x, p)
         tonic_events = rfn.unstructured_to_structured(tonic_events, dtype)
         return tonic_events
 
