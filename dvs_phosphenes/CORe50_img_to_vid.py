@@ -1,18 +1,30 @@
 import cv2
-from v2ecore.v2e_utils import video_writer
+data_path =  '/data/datasets/core50_128x128/'
+video_path = '/home/chadui/data/dvs_phosphenes/core50_128x128_video/'
 
-data_input =  '/data/chadui/core50_128x128/s1/o1'
-video_path = '/home/chadui/data/dvs_phosphenes/core50_128x128/s1_01_video.avi'
 height = 128
 width =128
 frame_rate = 20
-nr_frames= 299
+nr_frames= 300
+n_session = 11
+n_object = 50
 
-video_writer = video_writer(video_path,height, width, frame_rate)
+for ses in range(1, n_session+1) :
+    for obj in range(1,n_object+1):
 
-for img in range(nr_frames):
-    image_file= data_input + "/C_01_01_%0.3d.png" % img
-    frame = cv2.imread(image_file)
-    video_writer.write(frame)
+        data_input = data_path + "s%d/o%d/" %(ses, obj)
+        video_file = video_path + "s%d/s%d_o%d_vid.avi" %(ses,ses,obj)
 
-video_writer.release()
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        out = cv2.VideoWriter(
+            video_file,
+            fourcc,
+            frame_rate,
+            (width, height))
+
+        for img in range(nr_frames):
+            image_file = data_input + "C_%0.2d_%0.2d_%0.3d.png" % (ses,obj,img)
+            frame = cv2.imread(image_file)
+            out.write(frame)
+
+        out.release()
