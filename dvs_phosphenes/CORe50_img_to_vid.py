@@ -1,4 +1,5 @@
 import cv2
+
 data_path =  '/data/datasets/core50_128x128/'
 video_path = '/home/chadui/data/dvs_phosphenes/core50_128x128_video/'
 
