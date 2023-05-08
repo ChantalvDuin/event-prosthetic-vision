@@ -30,38 +30,38 @@ flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
 flags.DEFINE_string('dir_path', '', 'Path to directory of images')
 FLAGS = flags.FLAGS
 
-# find
+# some regex used for finding session, obj
 re_find_session = '(?<=.{5}).\d'
 re_find_object = '(?<=.{8}).\d'
 
+# find CORe50 object or session
 def find_obj(s, regex):
     obj = re.search(regex, s)
     return obj.group()
 
+# split csv data
 def split(df, group):
     data = namedtuple('data', ['Filename', 'object'])
     gb = df.groupby(group)
     return [data(filename, gb.get_group(x)) for filename, x in zip(gb.groups.keys(), gb.groups)]
 
+# create tensorflow example
 def create_tf_example(group, path):
     name = group.Filename
     temp = find_obj(name, re_find_session)
     if temp.startswith('0'):
         temp = temp[1:]
     session = 's' + temp
-    # print('session ' + session)
+
     temp = find_obj(name, re_find_object)
     if temp.startswith('0'):
         temp = temp[1:]
     object = 'o' + temp
-    # print('object ' + object)
 
     file_path = path + session + '/' + object + '/'
-    # print(file_path)
 
 
     with tf.io.gfile.GFile(os.path.join(file_path, '{}'.format(group.Filename)), 'rb') as fid:
-    #with tf.io.gfile.GFile(os.path.join(path, '{}'.format(group.Filename)), 'rb') as fid:
         encoded_jpg = fid.read()
     encoded_jpg_io = io.BytesIO(encoded_jpg)
     image = Image.open(encoded_jpg_io)
@@ -73,7 +73,6 @@ def create_tf_example(group, path):
     xmaxs = []
     ymins = []
     ymaxs = []
-    #classes_text = []
     classes = []
 
     for index, row in group.object.iterrows():
@@ -81,7 +80,6 @@ def create_tf_example(group, path):
         xmaxs.append(row['xmax'] / width)
         ymins.append(row['ymin'] / height)
         ymaxs.append(row['ymax'] / height)
-        #classes_text.append(row['class'])
         classes.append((row['class']))
 
     tf_example = tf.train.Example(features=tf.train.Features(feature={
@@ -100,11 +98,9 @@ def create_tf_example(group, path):
     }))
     return tf_example
 
-
+# transform csv data to tensorflow record
 def main(_):
-    # writer = tf.python_io.TFRecordWriter(FLAGS.output_path)
     writer = tf.io.TFRecordWriter(FLAGS.output_path)
-    # path = '/home/chadui/data/dvs_phosphenes/core50_dvs_train/'
     path = FLAGS.dir_path
     examples = pd.read_csv(FLAGS.csv_input)
     grouped = split(examples, 'Filename')
@@ -117,7 +113,6 @@ def main(_):
     output_path = os.path.join(os.getcwd(), FLAGS.output_path)
     print('Successfully created the TFRecords: {}'.format(output_path))
 
-
+# run main file
 if __name__ == '__main__':
-    # tf.app.run()
     tf.compat.v1.app.run()
