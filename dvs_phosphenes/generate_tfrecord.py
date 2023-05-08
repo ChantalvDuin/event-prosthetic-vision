@@ -103,6 +103,8 @@ def main(_):
     writer = tf.io.TFRecordWriter(FLAGS.output_path)
     path = FLAGS.dir_path
     examples = pd.read_csv(FLAGS.csv_input)
+    
+    # shuffle csv entries for variance reduction to avoid object detection model overfitting
     grouped = split(examples, 'Filename')
     random.shuffle(grouped)
     for group in grouped:
