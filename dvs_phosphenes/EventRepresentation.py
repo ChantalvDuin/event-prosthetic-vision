@@ -30,6 +30,7 @@ class EventRepresentation(object):
         self.height = height
         self.transform = None
         self.representation = None
+        self.pol_events = None
 
     def get_sensor_size(self):
         """
@@ -45,8 +46,8 @@ class EventRepresentation(object):
                 eventstream : eventstream (incl. events, height and width) from event vision object
         """
         self.events = eventstream.events
-        self.height = eventstream.height
-        self.width = eventstream.width
+        self.height = int(eventstream.height)
+        self.width = int(eventstream.width)
         self.get_sensor_size()
 
     def convert_to_frame(self, **kwargs):
@@ -75,7 +76,7 @@ class EventRepresentation(object):
         denoise_transform = transforms.Denoise(filter_time)
         self.events = denoise_transform(self.events)
 
-    def plot_frames(self, plot_file=None):
+    def plot_frames(self, plot_file=None, n_frames=None):
         """
             Plots the frames event representation of events and optionally store resulting plot
             ---
@@ -83,11 +84,12 @@ class EventRepresentation(object):
                 plot_file : file name to store resulting plot
         """
         frames = self.representation
-        fig, axes = plt.subplots(int(len(frames)/5), 5)
-
-        # fig, axes = plt.subplots(len(frames))
+        frames = frames[0:n_frames]
+        # fig, axes = plt.subplots(int(len(frames)/5), 5)
+        fig, axes = plt.subplots(len(frames))
         for axis, frame in zip(axes.flatten(), frames):
-            axis.imshow(frame[1] - frame[0])
+            #axis.imshow(frame[1] - frame[0],'gray')
+            axis.imshow(frame[0],'gray')
             axis.axis("off")
         plt.show(block=True)
         plt.tight_layout()
@@ -107,14 +109,15 @@ class EventRepresentation(object):
         self.transform = transforms.ToVoxelGrid(sensor_size=self.sensor_size, n_time_bins=n_time_bins)
         self.representation = self.transform(self.events)
 
-    def plot_voxels(self):
+    def plot_voxels(self, n_frames=None):
         """
             Plots the voxel grid event representation
         """
         volume = self.representation
+        volume = volume[0:n_frames]
         fig, axes = plt.subplots(1, len(volume))
         for axis, slice in zip(axes, volume):
-            axis.imshow(slice)
+            axis.imshow(slice, 'gray')
             axis.axis("off")
         plt.show(block=True)
         plt.tight_layout()
@@ -145,6 +148,78 @@ class EventRepresentation(object):
         fig, axes = plt.subplots(1, 3)
         for i, axis in enumerate(axes):
             surf = surfaces[(i + 1) * n_events_per_slice - 1]
-            axis.imshow(surf[0] - surf[1])
+            axis.imshow(surf[0] - surf[1], cmap="gray")
             axis.axis("off")
         plt.tight_layout()
+
+    def get_event_repres(self):
+        """
+            Returns event representations
+        :return: representation
+        """
+        return self.representation
+
+
+    def normalise_frame_repres(self):
+        """
+        Normalise frame event representation to pixel values between 0 and 1
+        :return: normalised frame event representation
+        """
+        n_frames = self.representation.shape[0]
+        norm_represent = np.zeros((n_frames, self.width, self.height))
+        for fr in range(n_frames):
+            norm_fr = self.representation[fr][0][:][:]
+            norm_represent[fr] = (norm_fr-np.min(norm_fr)) / (np.max(norm_fr)-np.min(norm_fr))
+        self.representation = norm_represent
+        return norm_represent
+
+    def v2e_normalise(self):
+        """
+         Normalise frame event representation to pixel values between 0 and 1, the manner that
+         v2e framework did
+        :return:
+        """
+        dvs_vid_full_scale = 3
+        n_frames = self.representation.shape[0]
+        norm_represent = np.zeros((n_frames, self.width, self.height))
+        for fr in range(n_frames):
+            norm_fr = self.representation[fr][0][:][:]
+            norm_represent[fr] = (norm_fr + dvs_vid_full_scale)/float(dvs_vid_full_scale*2)
+        return norm_represent
+
+    def remove_polar(self):
+        """
+        Merge polarities of events so that ON and OFF events have a singular polarity (a value of 1). T
+        This is so that OFF events, registered as 0 values, are not factored out when normalising.
+        :return: single polarity events
+        """
+        repre_merg_polar = transforms.MergePolarities()
+        self.events = repre_merg_polar(self.events)
+
+    def remove_pol_apply_refract_period(self, delta_time):
+        """
+        Merge polarities and apply a specified refractory period in which all
+        events are dropped for that time period. This is for the purpose of evening out
+        dense temporal event density.
+        :param delta_time: refractory period in which events should be dropped
+        :return: single polarity, refractory period dropped events
+        """
+        remove_pol_apply_refract_period =transforms.Compose([transforms.MergePolarities(), transforms.RefractoryPeriod(delta_time),])
+        self.events = remove_pol_apply_refract_period(self.events)
+
+    def apply_binary(self):
+        """
+        Binarise events by setting all enormalised non-zero event values accumualge within
+        an event image frame to a valaue of 1.
+        :return: binarised event image frame
+        """
+        apply_bin = self.representation
+        apply_bin[apply_bin>0]=1
+        self.representation = apply_bin
+        return apply_bin
+
+
+
+
+
+
