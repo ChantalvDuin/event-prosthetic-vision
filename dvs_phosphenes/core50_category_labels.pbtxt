@@ -1,0 +1,49 @@
+item {
+ id:1
+ name: 'plug_adapter'
+}
+
+item {
+ id:2
+ name: 'mobile_phone'
+}
+
+item {
+ id:3
+ name: 'scissor'
+}
+
+item {
+ id:4
+ name: 'light_bulb'
+}
+
+item {
+ id:5
+ name: 'can'
+}
+
+item {
+ id:6
+ name: 'glass'
+}
+
+item {
+ id:7
+ name: 'ball'
+}
+
+item {
+ id:8
+ name: 'marker'
+}
+
+item {
+ id:9
+ name: 'cup'
+}
+
+item {
+ id:10
+ name: 'remote_control'
+}

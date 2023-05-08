@@ -1,0 +1,10 @@
+plug_adapter
+mobile_phone
+scissor
+light_bulb
+can
+glass
+ball
+marker
+cup
+remote_control
