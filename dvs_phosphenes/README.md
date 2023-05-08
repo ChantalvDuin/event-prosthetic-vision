@@ -56,9 +56,11 @@ Download the CORe50 bounding boxes from the CORe50 repository at https://vlomona
 Generate the csv files for the training and test CORe50 dataset (either original images or prosthetic vision CORe50 images) using 'python create_csv.py --root=PATH_TO_DATASET --output_path=PATH_TO_CSV_FILE.csv'.
 
 **8. Generate .tf record**
+
 Create corresponding .tf record using 'python generate_tfrecord.py  --csv_input=.PATH_TO_CSV_FILE.csv
 --output_path=PATH_TO_TF_FILE.record --dir_path=PATH_TO_DATASET'.
 
 **9. Configure neural network for Object Detection**
+
 Configure chosen object detection model (in this case, EfficientDet-D0 was used) by adapting the configure file of the object detection model to the right paths of the .tf records and .pbtxt file as well as adjust number of classes. Then train and evaluate the object detection model on the origingal or prosthetic CORe50 dataset. Make sure to TensorFlow API object detection installed.
 
