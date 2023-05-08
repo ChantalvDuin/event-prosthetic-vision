@@ -175,15 +175,11 @@ def convert_v2e_emulator_events_to_tonic_events(v2e_events):
             - y is the y-location of event in pixels
             - p is the polarity of the event
     """
-    # dtype = np.dtype([("x", '<i8'), ("y", '<i8'), ("t", '<i8'), ("p", '<i8')])
     dtype = np.dtype([("x", int), ("y", int), ("t", int), ("p", int)])
     # uint32
     tonic_events = np.zeros((len(v2e_events), 4))
-    # print(v2e_events[0])
     tonic_events[:, [1, 2, 0, 3]] = v2e_events  # tonic events have the shape (x, y, t, p) while v2e events : (t, x , y, p)
-    # print(tonic_events[0])
     tonic_events = rfn.unstructured_to_structured(tonic_events, dtype)
-    # print(tonic_events[0])
     return tonic_events
 
 def convert_video_to_events_v2e_command(video_path, output_folder, out_video, out_filename_h5, out_filename_aedat = "None", overwrite=True, skip_video_output=False, davis_output = True):
