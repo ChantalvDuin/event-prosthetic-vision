@@ -9,7 +9,7 @@ import math
 import tensorflow as tf
 import numpy as np
 
-# set tensorflow api 2.0 flags for hyperparameters
+# set tensorflow api 1.0 flags for hyperparameters
 flags = tf.compat.v1.flags
 flags.DEFINE_string('root', '', 'Path to the root folder for directory of images for CSV')
 flags.DEFINE_string('output_path', '', 'Path to output CSV file')
