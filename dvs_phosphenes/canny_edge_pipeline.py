@@ -49,7 +49,7 @@ for ses in range(1, nr_ses+1) :
             edges = cv.Canny(img,lower_1,upper_1) # auto-generated thresholds
             # edges = cv.Canny(img, t_edge_low, t_edge_high)  # fixed thresholds
 
-            # specify configure options for phosphene simulator
+            # specify configure options for phosphene simulator, phosphene simulator used is from https://github.com/neuralcodinglab/dynaphos
             config = Config(display_size=(1600, 2880),
                             image_size=(350, 350),  # (260, 346),
                             zoom=1.,
