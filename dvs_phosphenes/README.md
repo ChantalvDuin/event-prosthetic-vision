@@ -3,7 +3,7 @@ This folder contains all the python files and classes used for running and creat
 canny edge detection prosthetic vision pipeline. 
 
 It also contains the classes and scripts for converting CORe50 dataset and its corresponding phosphene representations created with
-the prosthetic vision pipelines into tf_records, .pbtxt labels ready to be used with Tensorflow Object Detection API.
+the prosthetic vision pipelines into tf_records and .pbtxt labels ready to be used with Tensorflow Object Detection API.
 
 Classes for Event-based prosthetic vision:
 - **EventRepresentation.py:** it computes event representations from an event stream as well as ways of transforming the 
