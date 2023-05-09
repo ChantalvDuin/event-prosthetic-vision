@@ -78,7 +78,7 @@ for ses in range(1, nr_ses+1) : # for each CORe50 session
         # np.save('/home/chadui/data/dvs_phosphenes/object_detection/core50_ev500_frame_t.npy', frame_t);
 
         # -------- Get Phosphene Representation --------
-        # specify configure options for phosphene simulator
+        # specify configure options for phosphene simulator, phosphene simulator used is from https://github.com/neuralcodinglab/dynaphos
         config = Config(display_size=(1600, 2880),
                         image_size=(350, 350),  # (260, 346),
                         zoom=1.,
