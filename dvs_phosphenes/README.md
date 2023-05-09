@@ -33,19 +33,20 @@ Download the full-size_350x350_images.zip file from the CORe50 repository at htt
 
 **2. Convert CORe50 images to video**
 
-Transform CORe50 image frames to video using the CORe50_img_to_vid.py.
+Transform CORe50 image frames to video using the `CORe50_img_to_vid.py`.
 
 **3. Generate synthetic eventstream from CORe50 videos**
 
-Generate and save eventstream generated using EventStream.py and v2e framework with the EventStream function  'convert_video_to_events_v2e_command'. Make sure to have the v2e framework and needed packages installed. 
+Generate and save eventstream generated using `EventStream.py` and v2e framework with the EventStream function `convert_video_to_events_v2e_command`.
+Make sure to have the v2e framework and needed packages installed. 
 
 **4. Transform eventstreams of CORe50 to chosen Event representation and corresponding event-based prosthetic vision**
 
-Generate the phosphene representation corresponding event-based CORe50 images using the 'event_vision_pipeline.py' with the specified different event represenentations and transformations of 'EventRepresentation.py'. Make sure to have the tonic framework and needed packages installed. 
+Generate the phosphene representation corresponding event-based CORe50 images using the `event_vision_pipeline.py` with the specified different event represenentations and transformations of `EventRepresentation.py`. Make sure to have the tonic framework and needed packages installed. 
 
 **5. Generate Canny Edge detection CORe50 prosthetic vision**
 
-Generate the canny edge detection CORe50 phosphene representations.
+Generate the canny edge detection CORe50 phosphene representations using `canny_edge_pipeline.py`.
 
 **6. Download CORe50 bounding boxes**
 
@@ -53,12 +54,12 @@ Download the CORe50 bounding boxes from the CORe50 repository at https://vlomona
 
 **7. Generate CSV files**
 
-Generate the csv files for the training and test CORe50 dataset (either original images or prosthetic vision CORe50 images) using 'python create_csv.py --root=PATH_TO_DATASET --output_path=PATH_TO_CSV_FILE.csv'.
+Generate the csv files for the training and test CORe50 dataset (either original images or prosthetic vision CORe50 images) using `python create_csv.py --root=PATH_TO_DATASET --output_path=PATH_TO_CSV_FILE.csv`.
 
 **8. Generate .tf record**
 
-Create corresponding .tf record using 'python generate_tfrecord.py  --csv_input=.PATH_TO_CSV_FILE.csv
---output_path=PATH_TO_TF_FILE.record --dir_path=PATH_TO_DATASET'.
+Create corresponding .tf record using `python generate_tfrecord.py  --csv_input=.PATH_TO_CSV_FILE.csv
+--output_path=PATH_TO_TF_FILE.record --dir_path=PATH_TO_DATASET`.
 
 **9. Configure neural network for Object Detection**
 
